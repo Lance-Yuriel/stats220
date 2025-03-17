@@ -1,13 +1,35 @@
 # stats220
 
-This is my repo for STATS 220. 
+This is my repo for **STATS 220**.
 
-A little about me:
+---
 
-- I am undertaking a degree in Computer Science
-- I am taking STATS 220 because I want to deepen my understanding of data science capabilities and learn how to use programming languages (such as R), which could potentially widen my skillset for future career paths
-- I am interested in learning about data technologies and their applications to real-world problems
+## About Me
+- I am taking a degree in **Computer Science**.
+- I am currently taking **STATS 220** because I want to *deepen my understanding* of data science capabilities and learn how to use programming languages (such as R), which could potentially widen my skillset for future career paths.
+- I am interested in learning about data technologies and their applications to real-world problems.
 
-A meme that captures how I currently feel about my university studies is:
+---
 
-![](https://c.tenor.com/8druEACXtX8AAAAd/tenor.gif)
+## My Goals in STATS 220
+1. To get good at R programming and be able to apply it to future projects.
+2. To learn how to tidy, organise, and present data clearly.
+3. To build projects that solve real-world problems using what I've learned.
+
+---
+
+## Meme
+A meme that captures how I currently feel about my overall university studies is:
+
+![Cat Shaking Head]([https://c.tenor.com/8druEACXtX8AAAAd/tenor.gif](https://c.tenor.com/aovmKN6Vt4MAAAAd/tenor.gif))
+
+---
+
+## Useful Links
+- [Learn more about R programming](https://www.r-project.org/)
+- [Further insights on data science](https://towardsdatascience.com/)
+
+---
+
+### Closing Thoughts
+I hope that STATS 220 will be an exciting opportunity for me to combine creativity with technical skills, and I look forward to honing these skills along the way!
