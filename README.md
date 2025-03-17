@@ -18,8 +18,8 @@ This is my repo for **STATS 220**.
 
 ---
 
-## Meme
-A meme that captures how I currently feel about my overall university studies is:
+## GIF
+A GIF that captures how I currently feel about my overall university studies is:
 
 ![Cat Shaking Head](https://c.tenor.com/aovmKN6Vt4MAAAAd/tenor.gif)
 
