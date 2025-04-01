@@ -1,0 +1,144 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+library(tidyverse)
+
+# Import data from published CSV URL
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRYa7ohrdH_tvXAudXrFuBQ3-2EiJAl5rWsdooDC6YNAxHJErchPRhEHZKnYUV2d1t57AhpUN4daD-a/pub?gid=914579388&single=true&output=csv")
+
+# Rename variables and create new data frame
+latest_data <- logged_data %>%
+  rename(
+    device_type = "What device are you using when viewing YouTube recommendations?",
+    logged_in_status = "Are you logged into a YouTube/Google account when seeing these recommendations?",
+    unusualness_logged_in = "Rate the unusualness of the recommended video(s) on a scale from 1-5...4",
+    categories_logged_in = "What characteristics describe these recommendations? (Select all that apply)...5",
+    unusualness_not_logged_in = "Rate the unusualness of the recommended video(s) on a scale from 1-5...6",
+    categories_not_logged_in = "What characteristics describe these recommendations? (Select all that apply)...7",
+    unusual_recommendations_count = "How many recommendations seemed unusual to you? Type 0 if none were unexpected"
+  )
+```
+
+```{css}
+/* Style the headers for better readability */
+h1, h2, h3 {
+    font-family: Impact, fantasy;
+    color: #d4a373;
+    border-bottom: 2px solid #7A6E51;
+    padding-bottom: 5px;
+}
+
+/* Apply a modern, clean font to the entire document */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #EEE5D3; /* Beige background */
+    color: #333;
+    padding: 20px;
+}
+
+/* Style images to have a subtle shadow and spacing */
+img {
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+```
+
+## Analysis of YouTube Recommendation Data
+
+This report tracks unusualness ratings and categories of YouTube video recommendations for users who are logged in versus not logged in.
+
+### Unusualness Ratings: Logged-in vs. Non-Logged-in Users
+
+```{r}
+# Create new data frame with "login_status" column to differentiate logged-in and non-logged-in users
+data_for_plot <- data.frame(
+  login_status = c(rep("Logged In", length(latest_data$unusualness_logged_in)),
+                   rep("Not Logged In", length(latest_data$unusualness_not_logged_in))),
+  unusualness = c(latest_data$unusualness_logged_in, latest_data$unusualness_not_logged_in)
+)
+
+# Plot bar chart for unusualness ratings (logged in vs. not logged in users)
+ggplot(data_for_plot, aes(x = unusualness, fill = login_status)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Unusualness Ratings of YouTube video recommendations",
+    subtitle = "Logged-in vs. Non-Logged-in Users",
+    x = "Unusualness (1 = Completely expected, 5 = Extremely surprising or out of context)",
+    y = "Frequency of Responses"
+  ) +
+  theme_grey()
+```
+
+### Categories Recommended for Logged-in Users
+
+```{r}
+# Create new data frame for logged-in users' categories (separate and count)
+data_for_logged_in <- latest_data %>%
+  filter(categories_logged_in != "N/A") %>%
+  separate_rows(categories_logged_in, sep = ",") %>%
+  count(categories_logged_in)  # Count frequency of each category for logged-in users
+
+# Plot bar chart for frequency of categories recommended for logged-in users
+ggplot(data_for_logged_in, aes(x = categories_logged_in, y = n, fill = categories_logged_in)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Frequency of Categories Recommended for Logged-in Users",
+    x = "Categories Recommended",
+    y = "Frequency of Responses"
+  ) +
+  theme_grey() +
+  theme(
+    axis.text.x = element_blank()  # Remove x-axis labels
+  )
+```
+
+### Categories Recommended for Non-Logged-in Users
+
+```{r}
+# Create new data frame for non-logged-in users' categories (separate and count)
+data_for_not_logged_in <- latest_data %>%
+  filter(categories_not_logged_in != "N/A") %>%
+  separate_rows(categories_not_logged_in, sep = ",") %>%
+  count(categories_not_logged_in)  # Count frequency of each category for non-logged-in users
+
+# Plot bar chart for frequency of categories recommended for non-logged-in users
+ggplot(data_for_not_logged_in, aes(x = categories_not_logged_in, y = n, fill = categories_not_logged_in)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Frequency of Categories Recommended for Non-Logged-in Users",
+    x = "Categories Recommended",
+    y = "Frequency of Responses"
+  ) +
+  theme_grey() +
+  theme(
+    axis.text.x = element_blank()  # Remove x-axis labels
+  )
+```
+
+### Summary Values
+
+```{r}
+# Calculate summary statistics for unusualness ratings (min, max, mean)
+summary_values <- latest_data %>%
+  summarise(
+    min_unusualness_logged_in = min(unusualness_logged_in, na.rm = TRUE),  # Min value for logged-in users
+    max_unusualness_logged_in = max(unusualness_logged_in, na.rm = TRUE),  # Max value for logged-in users
+    mean_unusualness_logged_in = mean(unusualness_logged_in, na.rm = TRUE),  # Mean for logged-in users
+    min_unusualness_not_logged_in = min(unusualness_not_logged_in, na.rm = TRUE),  # Min value for non-logged-in users
+    max_unusualness_not_logged_in = max(unusualness_not_logged_in, na.rm = TRUE),  # Max value for non-logged-in users
+    mean_unusualness_not_logged_in = mean(unusualness_not_logged_in, na.rm = TRUE),  # Mean for non-logged-in users
+  )
+```
+
+The average unusualness rating for logged-in users is `r round(summary_values$mean_unusualness_logged_in, 2)`. 
+For non-logged-in users, the average unusualness rating is `r round(summary_values$mean_unusualness_not_logged_in, 2)`.
+
+This data suggests that logged-in users may receive more unexpected recommendations compared to non logged-in users, which could indicate that personalised YouTube algorithms are giving them more tailored content which may feel more surprising or unexpected. In contrast, non logged-in users may receive more generic recommendations that align with a broader audience's expectations.
